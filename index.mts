@@ -6,6 +6,9 @@ const canvas = document.getElementById('canvas') as HTMLCanvasElement
 canvas.width = 791;
 canvas.height = 500;
 
+const heartPath = document.getElementById('path-heart');
+const heartVertices = Svg.pathToVertices(heartPath, 1)
+
 const engine = Engine.create();
 
 const render = Render.create({
@@ -30,9 +33,9 @@ Render.run(render);
 const runner = Runner.create();
 Runner.run(runner, engine);
 
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 20; i++) {
   setTimeout(() => {
-    const body = Bodies.rectangle(150 + i*50, 0, 40, 40);
+    const body = createHeartBall();
     Composite.add(engine.world, [body]);
   }, i * 500)
 }
@@ -83,4 +86,26 @@ function createObstacles(): Body[] {
     }
   }
   return circles;
+}
+
+
+function createHeartBall() {
+  return Bodies.fromVertices(
+    random(300, 491), 0,
+    [heartVertices],
+    {
+      restitution: random(0.5, 0.9),
+      render: {
+        sprite: {
+          texture: "heart.png",
+          xScale: 1,
+          yScale: 1
+        }
+      }
+    }
+  );
+}
+
+function random(a: number, b: number) {
+  return Math.random() * (b - a) + a;
 }
